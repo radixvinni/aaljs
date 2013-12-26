@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python
 
 from __future__ import with_statement
 
@@ -9,9 +9,9 @@ import sys
 
 # LLVM commands.
 # TODO: Factor out to be configurable from ./build.
-CC = '/home/max/emscripten-workspace/llvm-gcc-install/bin/llvm-gcc'
-LINK = '/home/max/emscripten-workspace/llvm-build/Release/bin/llvm-link'
-LLC = '/home/max/emscripten-workspace/llvm-build/Release/bin/llc'
+CC = 'clang' #clang
+LINK = 'llvm-link'
+LLC = 'llc'
 
 # Argument filters.
 SKIPPED_CC_ARGS = [
@@ -96,7 +96,7 @@ with open('ccproxy.log', 'a') as log:
       # We want to compile the parser generator to native code.
       target = 'Parser/pgen'
       subprocess.call([LLC, '--filetype=obj', target, '-o', target + '.tmp.o'])
-      subprocess.call([CC, '-m32', target + '.tmp.o', '-o', target])
+      subprocess.call([CC, '-m32', target + '.tmp.o', '-o', target]) #-m32
       os.unlink(target + '.tmp.o')
   # Pass the subprocess result to the caller.
   sys.exit(ret)

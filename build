@@ -5,11 +5,10 @@
 ################################################################################
 
 # Whether to produce optimized, name-mangled, debugging-unfriendly JS.
-OPTIMIZED=1
+OPTIMIZED=0
 
 # Commands to use for various compilation steps.
-LLVM=/home/max/emscripten-workspace/llvm-build/Release/bin/
-PYTHON=python2
+PYTHON=python
 
 # Which modules to build dynamically.
 # Maps each module name to the C files implementing it.
@@ -113,7 +112,7 @@ function build_module {
 
   # Link.
   ../ccproxy.py $FILES -o $1.so.bc
-
+  
   # Emscript.
   $PYTHON ../emscripten/emscripten.py $1.so.bc \
       -o $1.so.js \
@@ -123,11 +122,8 @@ function build_module {
       -s CORRECT_OVERFLOWS=2 -s CORRECT_OVERFLOWS_LINES=$CORRECT_OVERFLOWS_LINES \
       $OPTIMIZATION_ARGS
 
-  # Run eliminator.
-  ../emscripten/tools/eliminator/node_modules/coffee-script/bin/coffee ../emscripten/tools/eliminator/eliminator.coffee < $1.so.js > $1.so.elim.js 2>/dev/null
-
   # Copy the new module to dist.
-  cp $1.so.elim.js ../dist/lib/python2.7/$1.so.js
+  cp $1.so.js ../dist/lib/python2.7/$1.so.js
 }
 
 ################################################################################
@@ -184,7 +180,7 @@ mkdir -p relinked
 cd relinked
 ar x ../libpython2.7.a
 rm main.o
-${LLVM}/llvm-link -o=python.bc *.o
+llvm-link -o=python.bc *.o
 cp python.bc ..
 cd ..
 
@@ -212,7 +208,7 @@ if [ $OPTIMIZED -eq 1 ]; then
   rm -rf ../dist/lib/python2.7/test
   rm -rf ../dist/lib/python2.7/*/test{,s}
 fi
-find ../dist -name '*.pyc' | xargs rm
+find ../dist -name '*.pyc' | xargs -r rm
 # Make sure everything is readable and folders are executable (browseable).
 chmod -R ugo+rX ../dist
 
@@ -232,7 +228,7 @@ done
 
 # Create virtual file system entries.
 echo 'Mapping virtual filesystem.'
-python2 ../map_filesystem.py ../dist >> ../dist/python.js
+python ../map_filesystem.py ../dist >> ../dist/python.js
 
 # Add a tiny handcoded JavaScript API.
 echo 'Adding entry point.'
