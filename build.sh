@@ -42,3 +42,7 @@ llvm-link libpython2.7.so Modules/python.o -o python.bc
 emcc -O1 python.bc -o python.js
 
 #nodejs python.js -S -c 'print 111'
+
+cd ../dist
+echo "" > lib/python2.7/site.py
+emcc ../js/python.bc -o python.opt.js -s INVOKE_RUN=0 --post-js ../entry_point.js -s OUTLINING_LIMIT=1000 --embed-file lib/python2.7/site.py

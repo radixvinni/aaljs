@@ -2,32 +2,30 @@
 <html>
   <head>
     <title>Empythoned</title>
+    <script src="python.opt.js">
+    </script>
     <script>
-      function start() {
-        var input = document.getElementById('input')
+    function start() {
+     Python.initialize();
+     var input = document.getElementById('input')
           , output = document.getElementById('output')
-          , button = document.getElementById('button')
-          , worker = new Worker('worker.js')
-          , loaded = false
-          , handler = function (e) {
-            if (!loaded) {
-              loaded = true;
-              button.value = "Execute";
-              input.disabled = false;
-              button.disabled = false;
-              return;
-            }
-            output.value += e.data;
-          };
-
-
-        worker.addEventListener('message', handler, false);
-
-        button.onclick = function() {
-          worker.postMessage(input.value);
-        };
-      };
-      window.onload = start;
+          , button = document.getElementById('button');
+     Module.print = function(x) { document.getElementById('output').value += x + "\n"; }
+     button.value = "Execute";
+     input.disabled = false;
+     button.disabled = false;
+     button.onclick = function() {
+       if (Python.isFinished(input.value)) {
+        var result = Python.eval(input.value);
+        if (result !== null && result !== undefined) {
+          console.log('\n--------------------------\nResult: ' + result);
+        }
+      } else {
+       consoe.log('\nCommand not finished.\n');
+      }
+     }
+    }
+    window.onload = start;
     </script>
   </head>
   <body>
