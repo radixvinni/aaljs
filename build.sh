@@ -65,6 +65,6 @@ cat post_fs.js >> fs.js
 emcc -O2 ../js/python.bc -s NAMED_GLOBALS=1 -s INVOKE_RUN=0 --pre-js fs.js\
  -s EXPORTED_FUNCTIONS="['_Py_Initialize', '_PySys_SetArgv', '_PyErr_Clear',\
  '_PyEval_EvalCode', '_PyString_AsString', '_Py_DecRef', '_PyErr_Print',\
- '_PyErr_Fetch']" -s ASM_JS=0 -o dist/python.js
+ '_PyErr_Fetch']" -s ASM_JS=0 -s LINKABLE=1 -s INCLUDE_FULL_LIBRARY=1 -o dist/python.js
 
 cp ../dist/index.html ../dist/worker.js dist
