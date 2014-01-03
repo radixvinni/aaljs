@@ -30,11 +30,11 @@ this['Python'] = {
       that.isHandlingError = true;
       return old_PyTraceBack_Print.apply(null, arguments);
     };
-
-    var help = ('def help(x):\n' +
-                '  print getattr(x, "__doc__", "No documentation.")\n' +
-                '  print ""\n' +
-                '  print "For detailed help, run \'from pydoc import help\' (slow)."');
+    _init_AAL();
+    var help = ('from AAL import *\n' +
+                'import share\n' +
+                'print ""\n' +
+                '');
     this['eval'](help);
   },
   // Evaluates Python code. Returns:
